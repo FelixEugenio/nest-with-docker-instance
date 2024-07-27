@@ -1,0 +1,14 @@
+version: '3.1'
+
+services:
+  db:
+    image: postgres:latest  # Use a imagem oficial do PostgreSQL
+    container_name: nestdev
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./docker/dbdata:/var/lib/postgresql/data  # Ajuste o caminho do volume
+    environment:
+      POSTGRES_PASSWORD: admin  # Corrija a indentação
+      POSTGRES_DB: nest
