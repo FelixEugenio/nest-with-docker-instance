@@ -13,7 +13,7 @@ export const dataSourceOptions: DataSourceOptions = {
   password: 'admin',
   database: 'nest',
   entities: [Course,Tag],
-  synchronize: true,
+  synchronize: false,
 };
 
 @Module({
