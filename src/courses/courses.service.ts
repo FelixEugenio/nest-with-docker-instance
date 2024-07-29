@@ -36,7 +36,7 @@ export class CoursesService {
     
    async  create(createCourseDTO:CreateCourseDTO){
     const tags = await Promise.all(
-        createCourseDTO.tagas.map(name => this.preloadTagByName(name))
+        createCourseDTO.tags.map(name => this.preloadTagByName(name))
     )
     const course = this.coursesRepository.create({
         ...createCourseDTO,
@@ -47,9 +47,9 @@ export class CoursesService {
     
     async update(id:string, updateCourseDTO:UpdateCourseDTO){
         const tags =
-         updateCourseDTO.tagas && 
+         updateCourseDTO.tags && 
         (await Promise.all(
-            updateCourseDTO.tagas.map(name => this.preloadTagByName(name))
+            updateCourseDTO.tags.map(name => this.preloadTagByName(name))
         ))
      const course = await this.coursesRepository.preload({
         ...updateCourseDTO,
