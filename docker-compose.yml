@@ -10,5 +10,16 @@ services:
     volumes:
       - ./docker/dbdata:/var/lib/postgresql/data  # Ajuste o caminho do volume
     environment:
-      POSTGRES_PASSWORD: admin  # Corrija a indentação
+      POSTGRES_PASSWORD: admin
       POSTGRES_DB: nest
+
+  dbtest:
+    build: .
+    container_name: test-db
+    restart: always
+    ports:
+      - '5433:5432'
+    environment:
+      - POSTGRES_PASSWORD=docker
+      - POSTGRES_DB=devtraining
+
