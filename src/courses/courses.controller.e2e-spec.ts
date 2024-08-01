@@ -9,58 +9,61 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 import { Tag } from './entities/tags.entity';
 import { CoursesModule } from './courses.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { dataSource } from '../database/orm-cli-config';
+import request from 'supertest';  // Importação padrão corrigida
 
 describe('CoursesController', () => {
   let app: INestApplication;
-  let module: TestingModule
-  let data: any
-  let courses: Course[]
+  let module: TestingModule;
+  let data: any;
+  let courses: Course[];
 
- const dataSourceTest: DataSourceOptions = {
+  const dataSourceTest: DataSourceOptions = {
     type: 'postgres',
     host: process.env.DB_HOST,
-    port: 5433,
-    username: process.env.DB_USER ,
+    port: 5432,
+    username: process.env.DB_USER,
     password: process.env.DB_PASS,
     database: process.env.DB_NAME,
-    entities: [Course,Tag],
+    entities: [Course, Tag],
     synchronize: true,
   };
 
-
   beforeAll(async () => {
     module = await Test.createTestingModule({
-        imports:[
-            CoursesModule,
-            TypeOrmModule.forRootAsync({
-                useFactory: async () => {
-                   return dataSourceTest
-                }
-            })
-        ]
-    }).compile()
-    app = module.createNestApplication()
-    await app.init()
+      imports: [
+        CoursesModule,
+        TypeOrmModule.forRootAsync({
+          useFactory: async () => {
+            return dataSourceTest;
+          },
+        }),
+      ],
+    }).compile();
+
+    app = module.createNestApplication();
+    await app.init();
 
     data = {
-        name:'Node.Js',
-        description:'Node.Js',
-        tags:['Node.Js','Nest.Js']
-
-    }
+      name: 'Node.Js',
+      description: 'Node.Js',
+      tags: ['Node.Js', 'Nest.Js'],
+    };
   });
 
-  beforeEach(async() =>{
-    const dataSource = await new DataSource(dataSourceTest).initialize()
-    const repository = dataSource.getRepository(Course)
-    courses = await repository.find()
-    await dataSource.destroy()
-  })
-
-  /*
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
+  beforeEach(async () => {
+    const dataSource = await new DataSource(dataSourceTest).initialize();
+    const repository = dataSource.getRepository(Course);
+    courses = await repository.find();
+    await dataSource.destroy();
   });
-  */
+
+  describe('POST /courses', () => {
+    it('should create a course', async () => {
+      const res = await request(app.getHttpServer())  // Agora 'request' é uma função
+        .post('/courses')
+        .send(data)
+        .expect(200);
+      console.log(res.body);
+    });
+  });
 });
