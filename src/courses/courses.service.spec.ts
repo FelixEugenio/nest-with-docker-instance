@@ -116,7 +116,7 @@ describe('CoursesService unit test', () => {
             name: 'test name',
             description:'test description',
             tags:['Node.Js'],
-    }
+    } 
 
     const updateCourse = await service.update(id,updateCourseDTO)
 
