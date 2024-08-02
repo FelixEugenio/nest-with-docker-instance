@@ -2,7 +2,6 @@
 /* eslint-disable prettier/prettier */
 import 'dotenv/config';
 import { Test, TestingModule } from '@nestjs/testing';
-import { CoursesController } from './courses.controller';
 import { INestApplication } from '@nestjs/common';
 import { Course } from './entities/courses.entity';
 import { DataSource, DataSourceOptions } from 'typeorm';
@@ -85,4 +84,37 @@ describe('CoursesController', () => {
         )
     });
   });
+
+  describe('GET /courses/:id', () => {
+    it('should gets a course by id', async () => {
+      const res = await request(app.getHttpServer())
+        .get(`/courses/${courses[0].id}`)
+        .expect(200)
+      expect(res.body.id).toEqual(courses[0].id)
+      expect(res.body.name).toEqual(courses[0].name)
+      expect(res.body.description).toEqual(courses[0].description)
+    })
+  })
+
+  describe('PUT /courses/:id', () => {
+    it('should update a course', async () => {
+      const updateData = {
+        name: 'new name',
+        description: 'new description',
+        tags: ['one', 'two'],
+      }
+
+      const res = await request(app.getHttpServer())
+        .put(`/courses/${courses[0].id}`)
+        .send(updateData)
+        .expect(200)
+      expect(res.body.id).toEqual(courses[0].id)
+      expect(res.body.name).toEqual('new name')
+      expect(res.body.description).toEqual('new description')
+      expect(res.body.tags).toHaveLength(2)
+      expect(res.body.tags[0].name).toEqual('one')
+      expect(res.body.tags[1].name).toEqual('two')
+    })
+  })
+
 });
